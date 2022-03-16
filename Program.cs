@@ -8,9 +8,9 @@ namespace Producer
         static void Main(string[] args)
         {
             DirectTestProducer.Produce(GetRabbitConnection());
-            //FanoutTestProducer.Produce(GetRabbitConnection());
-            //TopicTestProducer.Produce(GetRabbitConnection());
-            //InstantDirectTestProducer.Produce(GetRabbitConnection());
+            // FanoutTestProducer.Produce(GetRabbitConnection());
+            // TopicTestProducer.Produce(GetRabbitConnection());
+            // InstantDirectTestProducer.Produce(GetRabbitConnection());
         }
 
         static private IConnection GetRabbitConnection()

@@ -24,7 +24,7 @@ namespace Producer.Producers
                 var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
                 
                 channel.BasicPublish(exchange: exchangeName,
-                    routingKey: "cars_1",
+                    routingKey: "cars.1",
                     basicProperties: null,
                     body: body);
 
