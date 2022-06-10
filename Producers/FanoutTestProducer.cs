@@ -17,7 +17,7 @@ namespace Producer.Producers
                 
                 Console.WriteLine(connection.ChannelMax);
                 
-                var message = new MessageDto()
+                var message = new MessageDto2()
                 {
                     Content = $"Message from publisher with fanout exchange!"
                 };
