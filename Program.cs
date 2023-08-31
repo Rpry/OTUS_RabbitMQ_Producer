@@ -1,4 +1,6 @@
-﻿using Producer.Producers;
+﻿using Microsoft.Extensions.Configuration;
+using Producer.Producers;
+using Producer.Settings;
 using RabbitMQ.Client;
 
 namespace Producer
@@ -7,20 +9,25 @@ namespace Producer
     {
         static void Main(string[] args)
         {
-            DirectTestProducer.Produce(GetRabbitConnection());
-            // FanoutTestProducer.Produce(GetRabbitConnection());
-            // TopicTestProducer.Produce(GetRabbitConnection());
-            // InstantDirectTestProducer.Produce(GetRabbitConnection());
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+            
+            //DirectTestProducer.Produce(GetRabbitConnection());
+            //FanoutTestProducer.Produce(GetRabbitConnection());
+            //TopicTestProducer.Produce(GetRabbitConnection());
+            InstantDirectTestProducer.Produce(GetRabbitConnection(configuration));
         }
 
-        static private IConnection GetRabbitConnection()
+        static private IConnection GetRabbitConnection(IConfiguration configuration)
         {
+            var rmqSettings = configuration.Get<ApplicationSettings>().RmqSettings;
             ConnectionFactory factory = new ConnectionFactory
             {
-                UserName = "xvvcjzoi",
-                Password = "3zzqgto8t6iqz6EMWhrx3fj8ubnToHJ6",
-                VirtualHost = "xvvcjzoi",
-                HostName = "cow.rmq2.cloudamqp.com"
+                HostName = rmqSettings.Host,
+                VirtualHost = rmqSettings.VHost,
+                UserName = rmqSettings.Login,
+                Password = rmqSettings.Password,
             };
             IConnection conn = factory.CreateConnection();
             return conn;
