@@ -1,39 +1,41 @@
 using System;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
 
 namespace Producer.Producers
 {
     public class Producer
     {
-        private string _exchangeType;
-        private string _exchangeName;
-        private string _routingKey;
-        private IModel _model;
-        public Producer(string exchangeType, string exchangeName, string routingKey, IModel model)
+        private readonly string _exchangeName;
+        private readonly string _routingKey;
+        private readonly IChannel _channel;
+
+        public Producer(string exchangeType, string exchangeName,
+            string routingKey, IChannel channel)
         {
             _exchangeName = exchangeName;
-            _exchangeType = exchangeType;
             _routingKey = routingKey;
-            _model = model;
-            _model.ExchangeDeclare(_exchangeName, _exchangeType);
+            _channel = channel;
+            _channel.ExchangeDeclareAsync(_exchangeName, exchangeType);
         }
         
-        public void Produce(string messageContent)
+        public async Task Produce(string messageContent)
         {
             var message = new MessageDto()
             {
-                Content = $"{messageContent} (exchange: {_exchangeType})"
+                Content = $"{messageContent}"
             };
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
+            var messageSerialized = JsonSerializer.Serialize(message);
+            var body = Encoding.UTF8.GetBytes(messageSerialized);
             
-            _model.BasicPublish(exchange: _exchangeName,
+            await _channel.BasicPublishAsync(
+                exchange: _exchangeName,
                 routingKey: _routingKey,
-                basicProperties: null,
                 body: body);
 
-            Console.WriteLine($"Message is sent into Default Exchange: {_exchangeName}");
+            Console.WriteLine($"Message {messageSerialized} is sent into exchange: {_exchangeName}");
         }
     }
 }
