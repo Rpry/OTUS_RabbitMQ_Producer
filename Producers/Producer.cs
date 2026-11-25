@@ -20,7 +20,7 @@ namespace Producer.Producers
             _channel = channel;
             _channel.ExchangeDeclareAsync(_exchangeName, exchangeType);
         }
-        
+
         public async Task Produce(string messageContent)
         {
             var message = new MessageDto()
@@ -29,7 +29,7 @@ namespace Producer.Producers
             };
             var messageSerialized = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(messageSerialized);
-            
+
             await _channel.BasicPublishAsync(
                 exchange: _exchangeName,
                 routingKey: _routingKey,
