@@ -22,13 +22,15 @@ namespace Producer
             //var producer = new Producers.Producer("fanout", "exchange.fanout", "cars.1", channel);
             //var producer = new Producers.Producer("topic", "exchange.topic", "cars.1", channel);
             
-            //await producer.Produce($"{new Random().Next(1,100)}");
+            await producer.Produce($"{new Random().Next(1,100)}");
             
+            /*
             while (true)
             {
                 await producer.Produce($"{new Random().Next(1,100)}");
                 Thread.Sleep(TimeSpan.FromSeconds(1)); // Имитация долгой обработки
             }
+            */
 
             await channel.CloseAsync();
             await connection.CloseAsync();
